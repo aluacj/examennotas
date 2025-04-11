@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+    <meta charset="utf-8">
+    <title>Notas Encriptadas</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="container mt-4">
+    <h2>Notas Encriptadas</h2>
+    
+    <!-- Formulario de notas -->
+    <form method="post" action="http://localhost/notas.php" target="frame">
+        <div class="form-group">
+            <label for="nombre">Nombre:</label>
+            <input type="text" class="form-control" name="nombre" id="nombre" required>
+        </div>
+        <div class="form-group">
+            <label for="nota">Nota:</label>
+            <input type="text" class="form-control" name="nota" id="nota" required>
+            <input type="hidden" name="notaEncriptada" id="notaEncriptada">
+        </div>
+        <div class="form-group">
+            <label for="llave">Llave de Encriptación:</label>
+            <input type="text" class="form-control" id="llave" name="llave" maxlength="4">
+        </div>
+        <button type="button" class="btn btn-primary" id="btn-encriptar">Encriptar Nota</button>
+        <input type="submit" class="btn btn-success" name="grabar" value="GRABAR NOTA">
+    </form>
+
+    <div id="mensaje" style="margin-top: 10px;"></div>
+
+    <hr>
+
+    <h3>Leer Nota</h3>
+    <form method="post" action="http://localhost/notas.php" target="frame">
+        <div class="form-group">
+            <label for="Nomnota">Nombre de Nota:</label>
+            <input type="text" class="form-control" name="Nomnota" id="Nomnota" required>
+        </div>
+        <div class="form-group">
+            <label for="llaveDesencriptar">Llave para Desencriptar:</label>
+            <input type="text" class="form-control" name="llaveDesencriptar" id="llaveDesencriptar" maxlength="4">
+        </div>
+        <button type="submit" class="btn btn-info" name="leer" value="LEER NOTA">Leer Nota Encriptada</button>
+        <button type="submit" class="btn btn-warning" name="desencriptar" value="DESENCRIPTAR NOTA">Desencriptar Nota</button>
+    </form>
+
+    <!-- Nuevo formulario para crear la llave maestra -->
+    <hr>
+    <h3>Crear Llave Maestra</h3>
+    <form method="post" action="http://localhost/notas.php" target="frame">
+        <div class="form-group">
+            <label for="llaveMaestra">Llave Maestra:</label>
+            <input type="text" class="form-control" name="llaveMaestra" id="llaveMaestra" maxlength="4" required>
+        </div>
+        <button type="submit" class="btn btn-danger" name="crearLlaveMaestra" value="CREAR LLAVE MAESTRA">Crear Llave Maestra</button>
+    </form>
+
+    <div id="resultado" style="margin-top: 20px;"></div>
+
+    <iframe name="frame" style="width:100%; height:200px; border:1px solid red;" class="mt-3"></iframe>
+</div>
+
+<script>
+    document.getElementById('btn-encriptar').addEventListener('click', function () {
+        var nota = document.getElementById('nota').value;
+        var llave = document.getElementById('llave').value;
+
+        if (nota && llave) {
+            var textoEncriptado = "";
+            for (var i = 0; i < nota.length; i++) {
+                var vEntero = nota.charCodeAt(i) + parseInt(llave);
+                textoEncriptado += String.fromCharCode(vEntero);
+            }
+
+            document.getElementById('mensaje').innerHTML = "Nota encriptada: " + textoEncriptado;
+            document.getElementById('notaEncriptada').value = textoEncriptado;
+
+        } else {
+            alert("Debes escribir la nota y una llave para encriptar.");
+        }
+    });
+
+    document.getElementById('nota').addEventListener('input', function () {
+        document.getElementById('notaEncriptada').value = "";
+        document.getElementById('mensaje').innerHTML = "";
+    });
+
+    document.getElementById('llave').addEventListener('input', function () {
+        if (this.value === "") {
+            document.getElementById('notaEncriptada').value = "";
+            document.getElementById('mensaje').innerHTML = "";
+        }
+    });
+</script>
+
+</body>
+</html>
